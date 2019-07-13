@@ -6,3 +6,4 @@ language
 - sql
 - javascript
 - nodejs
+- commandline
