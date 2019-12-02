@@ -1,0 +1,74 @@
+version: '3.7'
+services:
+  nginx:
+    container_name: printer-nginx
+    build:
+      context: ./
+      dockerfile: ./docker/container/nginx/Dockerfile
+#    image: nginx:1.17.3-alpine
+    restart: always
+    ports:
+      - 8001:80
+      - 4431:443
+#    volumes:
+#      - type: bind
+#        source: ./docker/nginx
+#        target: /etc/nginx/conf.d
+#      - ./docker/ssl/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key
+#      - ./docker/ssl/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
+#      - ./docker/ssl/dhparam.pem:/etc/ssl/certs/dhparam.pem
+#      - ./docker/ssl/ssl-params.conf:/etc/nginx/snippets/ssl-params.conf
+    networks:
+      - overlay
+    depends_on:
+      - web
+  #    volumes:
+  #      - ./docker/nginx/default.conf:/etc/nginx/default.conf
+
+#  mysql:
+#    container_name: printer-mysql
+#    image: mysql:8.0.17
+#    command: --default-authentication-plugin=mysql_native_password
+#    restart: always
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 12345678
+#      MYSQL_DATABASE: printer
+#    networks:
+#      - overlay
+
+  mongo:
+    container_name: printer-mongo
+    image: mongo
+    restart: always
+    #    command: [ "redis-server", "--protected-mode", "no" ]
+#    ports:
+#      - "63791:6379"
+    networks:
+      - overlay
+
+  web:
+    container_name: printer-web
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./docker/container/web/Dockerfile
+    working_dir: /app
+    volumes:
+      - type: bind
+        source: ./
+        target: /app
+#    ports:
+#      - "8081:8080"
+    depends_on:
+      - mongo
+    networks:
+      - overlay
+#    command: ./gradlew :presentation:web:printer:bootRun
+#    external_links:
+#      - redis_1
+#      - project_db_1:mysql
+
+
+networks:
+  overlay:
+    driver: bridge
