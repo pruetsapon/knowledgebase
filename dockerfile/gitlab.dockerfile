@@ -1,0 +1,1 @@
+docker run --detach --restart unless-stopped --memory 4g --hostname 172.17.9.247 --publish 443:443 --publish 80:80 --publish 22:22 --name gitlab --restart always --volume C:/Docker/Volumes/gitlab/config:/etc/gitlab --volume C:/Docker/Volumes/gitlab/logs:/var/log/gitlab --volume C:/Docker/Volumes/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce
